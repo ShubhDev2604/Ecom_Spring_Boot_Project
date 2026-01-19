@@ -18,4 +18,8 @@ public class ProductService {
     public List<Product> getAllProducts() {
         return repo.findAll();
     }
+
+    public Product getProductById(Long prodId) {
+        return repo.findById(prodId).orElse(new Product());
+    }
 }
