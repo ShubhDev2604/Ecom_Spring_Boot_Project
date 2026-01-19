@@ -20,6 +20,6 @@ public class ProductService {
     }
 
     public Product getProductById(Long prodId) {
-        return repo.findById(prodId).orElse(new Product());
+        return repo.findById(prodId).orElse(null);
     }
 }

@@ -2,6 +2,8 @@ package in.lifehive.ecom_proj.controller;
 
 import in.lifehive.ecom_proj.model.Product;
 import in.lifehive.ecom_proj.service.ProductService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,18 +18,25 @@ public class ProductController {
         this.service = service;
     }
 
-    @GetMapping("/")
-    public String hii(){
-        return "Hello World!";
-    }
-
     @GetMapping("/products")
-    public List<Product> getAllProducts(){
-        return service.getAllProducts();
+    public ResponseEntity<List<Product>> getAllProducts(){
+        List<Product> products = service.getAllProducts();
+        if(products.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        }
     }
 
     @GetMapping("/product/{prodId}")
-    public Product getProductById(@PathVariable Long prodId) {
-        return service.getProductById(prodId);
+    public ResponseEntity<Product> getProductById(@PathVariable Long prodId) {
+        Product product = service.getProductById(prodId);
+        if(product == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(null);
+        } else {
+            return new ResponseEntity<>(product, HttpStatus.OK);
+        }
     }
 }
