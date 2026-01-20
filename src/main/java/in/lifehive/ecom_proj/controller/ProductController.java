@@ -71,4 +71,43 @@ public class ProductController {
                     .body(imageFile);
         }
     }
+
+    @PutMapping("/product/{prodId}")
+    public ResponseEntity<String> updateProduct(
+            @PathVariable Long prodId,
+            @RequestPart Product product,
+            @RequestPart MultipartFile imageFile
+    ) {
+        try {
+            Product prod = service.updateProduct(prodId, product, imageFile);
+            if(prod == null) {
+                return new ResponseEntity("Something went Wrong...Failed to update", HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity("Updated", HttpStatus.OK);
+            }
+        } catch(Exception e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/product/{prodId}")
+    public ResponseEntity<String> deleteProduct(@PathVariable Long prodId){
+        Product product = service.getProductById(prodId);
+        if(product == null) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Product Not Found");
+        } else {
+            try {
+                service.deleteProductById(prodId);
+                return ResponseEntity
+                        .ok()
+                        .body("Product Deleted!");
+            } catch(Exception e) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(e.getMessage());
+            }
+        }
+    }
 }
