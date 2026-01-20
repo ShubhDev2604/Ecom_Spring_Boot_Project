@@ -5,6 +5,7 @@ import in.lifehive.ecom_proj.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class ProductController {
         }
     }
 
+    // Will be using custom ApiResponse wrapper at end.
     @GetMapping("/product/{prodId}")
     public ResponseEntity<Product> getProductById(@PathVariable Long prodId) {
         Product product = service.getProductById(prodId);
@@ -37,6 +39,19 @@ public class ProductController {
                     .body(null);
         } else {
             return new ResponseEntity<>(product, HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/product")
+    public ResponseEntity<?> addProduct(
+            @RequestPart Product product,
+            @RequestPart MultipartFile imageFile) {
+        System.out.println(product);
+        try {
+            Product product1 = service.addProduct(product, imageFile);
+            return new ResponseEntity<>(product1, HttpStatus.CREATED);
+        } catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
